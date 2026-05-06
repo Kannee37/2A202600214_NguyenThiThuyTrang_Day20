@@ -20,8 +20,31 @@ class Settings(BaseSettings):
     openai_api_key: str | None = Field(default=None, validation_alias="OPENAI_API_KEY")
     openai_model: str = Field(default="gpt-4o-mini", validation_alias="OPENAI_MODEL")
 
+    llm_provider: str = Field(default="mock", validation_alias="LLM_PROVIDER")
+    llama_cpp_model_path: str | None = Field(default=None, validation_alias="LLAMA_CPP_MODEL_PATH")
+    llama_cpp_n_ctx: int = Field(default=4096, ge=512, validation_alias="LLAMA_CPP_N_CTX")
+    llama_cpp_n_threads: int | None = Field(default=None, validation_alias="LLAMA_CPP_N_THREADS")
+    llama_cpp_max_tokens: int = Field(default=512, ge=1, validation_alias="LLAMA_CPP_MAX_TOKENS")
+    llama_server_url: str = Field(
+        default="http://127.0.0.1:8080",
+        validation_alias="LLAMA_SERVER_URL",
+    )
+    llama_server_model: str = Field(default="local-gguf", validation_alias="LLAMA_SERVER_MODEL")
+
     langsmith_api_key: str | None = Field(default=None, validation_alias="LANGSMITH_API_KEY")
-    langsmith_project: str = Field(default="multi-agent-research-lab", validation_alias="LANGSMITH_PROJECT")
+    langsmith_project: str = Field(
+        default="multi-agent-research-lab",
+        validation_alias="LANGSMITH_PROJECT",
+    )
+
+    trace_provider: str = Field(default="local", validation_alias="TRACE_PROVIDER")
+    langfuse_public_key: str | None = Field(default=None, validation_alias="LANGFUSE_PUBLIC_KEY")
+    langfuse_secret_key: str | None = Field(default=None, validation_alias="LANGFUSE_SECRET_KEY")
+    langfuse_host: str = Field(
+        default="https://cloud.langfuse.com",
+        validation_alias="LANGFUSE_HOST",
+    )
+    langfuse_base_url: str | None = Field(default=None, validation_alias="LANGFUSE_BASE_URL")
 
     tavily_api_key: str | None = Field(default=None, validation_alias="TAVILY_API_KEY")
 

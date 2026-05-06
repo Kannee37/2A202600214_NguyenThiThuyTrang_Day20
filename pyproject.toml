@@ -26,6 +26,13 @@ llm = [
   "langchain-core>=0.2",
   "langsmith>=0.1"
 ]
+local-llm = [
+  "llama-cpp-python>=0.3.0"
+]
+observability = [
+  "langsmith>=0.4",
+  "langfuse>=3.0"
+]
 dev = [
   "pytest>=8.2",
   "pytest-cov>=5.0",

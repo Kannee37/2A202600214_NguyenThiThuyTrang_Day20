@@ -1,7 +1,8 @@
 """Supervisor / router skeleton."""
 
 from multi_agent_research_lab.agents.base import BaseAgent
-from multi_agent_research_lab.core.errors import StudentTodoError
+from multi_agent_research_lab.core.config import get_settings
+from multi_agent_research_lab.core.schemas import AgentName, AgentResult
 from multi_agent_research_lab.core.state import ResearchState
 
 
@@ -11,12 +12,35 @@ class SupervisorAgent(BaseAgent):
     name = "supervisor"
 
     def run(self, state: ResearchState) -> ResearchState:
-        """Update `state.route_history` with the next route.
+        """Update `state.route_history` with the next route."""
 
-        TODO(student): Implement routing policy. Suggested steps:
-        - Inspect request, current notes, and missing fields.
-        - Choose one of: researcher, analyst, writer, done.
-        - Enforce max iterations and failure fallback.
-        """
+        settings = get_settings()
+        if state.iteration >= settings.max_iterations:
+            route = "done"
+            reason = "max_iterations reached"
+        elif not state.research_notes:
+            route = AgentName.RESEARCHER.value
+            reason = "research notes are missing"
+        elif not state.analysis_notes:
+            route = AgentName.ANALYST.value
+            reason = "analysis notes are missing"
+        elif not state.final_answer:
+            route = AgentName.WRITER.value
+            reason = "final answer is missing"
+        else:
+            route = "done"
+            reason = "all required outputs are present"
 
-        raise StudentTodoError("TODO(student): implement SupervisorAgent.run")
+        state.record_route(route)
+        state.agent_results.append(
+            AgentResult(
+                agent=AgentName.SUPERVISOR,
+                content=f"Route to {route}: {reason}.",
+                metadata={"route": route, "reason": reason, "iteration": state.iteration},
+            )
+        )
+        state.add_trace_event(
+            "supervisor.route",
+            {"route": route, "reason": reason, "iteration": state.iteration},
+        )
+        return state
